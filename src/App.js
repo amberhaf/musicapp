@@ -1,6 +1,6 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Game from './Game';
+import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Game from "./Game";
 
 const App = () => (
   <BrowserRouter>
