@@ -1,0 +1,13 @@
+stuff to do
+onclick of start get a random song
+song will be from spotify api later
+choose randomly from effect array
+apply random effects to song using apis
+play song
+provide input for user to guess name of song
+if guess equals title of song increase score
+
+additional functionality
+provide hints
+customise genre
+multiplayer mode
