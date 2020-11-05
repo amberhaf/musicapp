@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Game from "./Game";
+import Music from "./Music";
 
 const App = () => (
   <BrowserRouter>

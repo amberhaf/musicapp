@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Songs } from "./Songs.js";
+import Pizzicato from "pizzicato";
 
 const localSpotify = Songs;
 
@@ -10,10 +11,28 @@ class Game extends Component {
       searchTerm: "",
       random: "",
       correct: 0,
-      globalArray: localSpotify
+      globalArray: localSpotify,
+      play: false,
+      pause: true,
     };
     this.onGuessChange = this.onGuessChange.bind(this);
     this.start = this.start.bind(this);
+    this.play = this.play.bind(this);
+    this.pause = this.pause.bind(this);
+    this.audio = new Pizzicato.Sound('./wait.mp3');
+    this.ringModulator = new Pizzicato.Effects.RingModulator({
+        speed: 30,
+        distortion: 1,
+        mix: 0.5
+    });
+    this.tremolo = new Pizzicato.Effects.Tremolo({
+        speed: 7,
+        depth: 0.8,
+        mix: 0.8
+    });
+    this.stereoPanner = new Pizzicato.Effects.StereoPanner({
+      pan: 0.0
+    });
   }
   onGuessChange(event) {
     let random = this.state.random;
@@ -21,10 +40,34 @@ class Game extends Component {
     correct = correct + 1;
     if (random.toLowerCase() === event.target.value.toLowerCase()) {
       this.setState({ correct: correct });
+      this.pause();
     }
     this.setState({ searchTerm: event.target.value });
   }
+  play() {
+    let num = Math.floor(Math.random() * 3);
+    console.log("NUm is !!!!!!"+ num);
+    if(num===0)
+    {
+      this.audio.addEffect(this.ringModulator);
+    }
+    else if(num===1)
+    {
+      this.audio.addEffect(this.tremolo);
+    }
+    else if(num===2)
+    {
+      this.audio.addEffect(this.stereoPanner);
+    }
+    this.setState({ play: true, pause: false })
+    this.audio.play();
+  }
+  pause() {
+    this.setState({ play: false, pause: true })
+      this.audio.pause();
+  }
   start() {
+    this.play();
     let num = Math.floor(Math.random() * localSpotify.length);
     let random = localSpotify[num].title;
     this.setState({ random: random });
