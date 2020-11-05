@@ -10,16 +10,14 @@ class Game extends Component {
     this.state = {
       searchTerm: "",
       random: "",
+      audio: new Pizzicato.Sound('./dissolve.mp3'),
       correct: 0,
       globalArray: localSpotify,
       play: false,
-      pause: true,
     };
     this.onGuessChange = this.onGuessChange.bind(this);
     this.start = this.start.bind(this);
     this.play = this.play.bind(this);
-    this.pause = this.pause.bind(this);
-    this.audio = new Pizzicato.Sound('./wait.mp3');
     this.ringModulator = new Pizzicato.Effects.RingModulator({
         speed: 30,
         distortion: 1,
@@ -34,50 +32,60 @@ class Game extends Component {
       pan: 0.0
     });
   }
+  
   onGuessChange(event) {
     let random = this.state.random;
     let correct = this.state.correct;
     correct = correct + 1;
     if (random.toLowerCase() === event.target.value.toLowerCase()) {
       this.setState({ correct: correct });
-      this.pause();
     }
     this.setState({ searchTerm: event.target.value });
   }
   play() {
     let num = Math.floor(Math.random() * 3);
     console.log("NUm is !!!!!!"+ num);
+    this.audio = new Pizzicato.Sound('./wait.mp3');
+    var music=this.audio;
     if(num===0)
     {
-      this.audio.addEffect(this.ringModulator);
+      music.addEffect(this.ringModulator);
     }
     else if(num===1)
     {
-      this.audio.addEffect(this.tremolo);
+      music.addEffect(this.tremolo);
     }
     else if(num===2)
     {
-      this.audio.addEffect(this.stereoPanner);
+      music.addEffect(this.stereoPanner);
     }
-    this.setState({ play: true, pause: false })
-    this.audio.play();
-  }
-  pause() {
-    this.setState({ play: false, pause: true })
-      this.audio.pause();
+    this.setState({ play: true})
+    music.play();
   }
   start() {
-    this.play();
+    
     let num = Math.floor(Math.random() * localSpotify.length);
     let random = localSpotify[num].title;
     this.setState({ random: random });
+    this.setState({ play: false})
+    var sound1=new Pizzicato.Sound('dissolve.mp3');
+    var sound2=new Pizzicato.Sound('wait.mp3');
+
+    if(num%2==0){
+      this.setState({ audio: sound1});
+    }
+    else
+    {
+      this.setState({ audio: sound2});
+    }
+      this.state.audio.play();
   }
 
   render() {
     return (
       <div className="App">
         <h1>Song guessing app</h1> <br />
-        <Play random={this.state.random} start={this.start} />
+        <Play random={this.state.random} audio={this.state.audio} start={this.start} />
         <Guess
           searchTerm={this.state.searchTerm}
           correct={this.state.correct}
@@ -93,6 +101,7 @@ class Play extends Component {
   render() {
     const random = this.props.random;
     const start = this.props.start;
+    const audio = this.props.audio;
 
     return (
       <div className="PlayDisplay">
