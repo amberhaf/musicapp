@@ -1,8 +1,23 @@
 import React, { Component } from "react";
 import { Songs } from "./Songs.js";
-import Pizzicato from "pizzicato";
+import Pizzicato from 'pizzicato';
 
 const localSpotify = Songs;
+var audio = new Pizzicato.Sound('./wait.mp3');
+
+var ringModulator = new Pizzicato.Effects.RingModulator({
+  speed: 30,
+  distortion: 1,
+  mix: 0.5
+});
+var tremolo = new Pizzicato.Effects.Tremolo({
+  speed: 7,
+  depth: 0.8,
+  mix: 0.8
+});
+var stereoPanner = new Pizzicato.Effects.StereoPanner({
+pan: 0.0
+});
 
 class Game extends Component {
   constructor(props) {
@@ -10,7 +25,6 @@ class Game extends Component {
     this.state = {
       searchTerm: "",
       random: "",
-      audio: new Pizzicato.Sound('./dissolve.mp3'),
       correct: 0,
       globalArray: localSpotify,
       play: false,
@@ -18,19 +32,6 @@ class Game extends Component {
     this.onGuessChange = this.onGuessChange.bind(this);
     this.start = this.start.bind(this);
     this.play = this.play.bind(this);
-    this.ringModulator = new Pizzicato.Effects.RingModulator({
-        speed: 30,
-        distortion: 1,
-        mix: 0.5
-    });
-    this.tremolo = new Pizzicato.Effects.Tremolo({
-        speed: 7,
-        depth: 0.8,
-        mix: 0.8
-    });
-    this.stereoPanner = new Pizzicato.Effects.StereoPanner({
-      pan: 0.0
-    });
   }
   
   onGuessChange(event) {
@@ -64,21 +65,37 @@ class Game extends Component {
   }
   start() {
     
-    let num = Math.floor(Math.random() * localSpotify.length);
+    let num = Math.floor(Math.random() * 10);
     let random = localSpotify[num].title;
     this.setState({ random: random });
     this.setState({ play: false})
-    var sound1=new Pizzicato.Sound('dissolve.mp3');
-    var sound2=new Pizzicato.Sound('wait.mp3');
 
+    audio.stop();
+    var song = "./dissolve.mp3"
     if(num%2==0){
-      this.setState({ audio: sound1});
+      song = './dissolve.mp3';
     }
     else
     {
-      this.setState({ audio: sound2});
+      song = './wait.mp3';
     }
-      this.state.audio.play();
+
+    audio = new Pizzicato.Sound(song, function() {
+      num = Math.floor(Math.random() * 3);
+      if(num===0)
+      {
+        audio.addEffect(ringModulator);
+      }
+      else if(num===1)
+      {
+        audio.addEffect(tremolo);
+      }
+      else if(num===2)
+      {
+        audio.addEffect(stereoPanner);
+      }
+      audio.play();
+    });
   }
 
   render() {
