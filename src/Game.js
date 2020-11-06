@@ -7,16 +7,17 @@ var audio = new Pizzicato.Sound('./wait.mp3');
 
 var ringModulator = new Pizzicato.Effects.RingModulator({
   speed: 30,
-  distortion: 1,
+  distortion: 2,
   mix: 0.5
 });
 var tremolo = new Pizzicato.Effects.Tremolo({
-  speed: 7,
+  speed: 30,
   depth: 0.8,
   mix: 0.8
 });
 var stereoPanner = new Pizzicato.Effects.StereoPanner({
-pan: 0.0
+pan: 1.0,
+speed:30
 });
 
 class Game extends Component {
@@ -31,7 +32,6 @@ class Game extends Component {
     };
     this.onGuessChange = this.onGuessChange.bind(this);
     this.start = this.start.bind(this);
-    this.play = this.play.bind(this);
   }
   
   onGuessChange(event) {
@@ -40,45 +40,20 @@ class Game extends Component {
     correct = correct + 1;
     if (random.toLowerCase() === event.target.value.toLowerCase()) {
       this.setState({ correct: correct });
+      this.start();
     }
     this.setState({ searchTerm: event.target.value });
   }
-  play() {
-    let num = Math.floor(Math.random() * 3);
-    console.log("NUm is !!!!!!"+ num);
-    this.audio = new Pizzicato.Sound('./wait.mp3');
-    var music=this.audio;
-    if(num===0)
-    {
-      music.addEffect(this.ringModulator);
-    }
-    else if(num===1)
-    {
-      music.addEffect(this.tremolo);
-    }
-    else if(num===2)
-    {
-      music.addEffect(this.stereoPanner);
-    }
-    this.setState({ play: true})
-    music.play();
-  }
   start() {
     
-    let num = Math.floor(Math.random() * 10);
+    let num = Math.floor(Math.random() * 5);
     let random = localSpotify[num].title;
     this.setState({ random: random });
     this.setState({ play: false})
-
+    //var url='http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3';
     audio.stop();
-    var song = "./dissolve.mp3"
-    if(num%2==0){
-      song = './dissolve.mp3';
-    }
-    else
-    {
-      song = './wait.mp3';
-    }
+    var title="./"+random+".mp3";
+    var song = title;
 
     audio = new Pizzicato.Sound(song, function() {
       num = Math.floor(Math.random() * 3);
@@ -124,7 +99,7 @@ class Play extends Component {
       <div className="PlayDisplay">
         <button onClick={start}>Start</button>
         <p>
-          Random Song:<b>{random}</b>
+         {/* Random Song:<b>{random}</b>*/}
         </p>
         <p>The song will play with random effects applied to it</p>
       </div>
