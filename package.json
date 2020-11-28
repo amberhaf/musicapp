@@ -1,0 +1,67 @@
+{
+  "name": "youtube-mp3-downloader",
+  "version": "0.7.6",
+  "description": "Downloads Youtube videos (in parallel, as streams), encodes the audio data as mp3 and stores them in a defineable location",
+  "keywords": [
+    "youtube",
+    "mp3",
+    "download",
+    "encode",
+    "ffmpeg",
+    "parallel",
+    "fast",
+    "streams",
+    "react",
+    "starter"
+  ],
+  "main": "src/index.js",
+  "private": false,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build",
+    "start": "node server.js",
+    "client": "cd client && npm start",
+    "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon server.js\" \"npm run client\""
+  },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "async": "^3.2.0",
+    "axios": "^0.21.0",
+    "browser-router": "0.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fluent-ffmpeg": "2.1.2",
+    "morgan": "^1.10.0",
+    "body-parser": "^1.19.0",
+    "howler": "^2.2.1",
+    "pizzicato": "^0.6.4",
+    "progress-stream": "^2.0.0",
+    "react": "17.0.0",
+    "react-dom": "17.0.0",
+    "react-howler": "^4.0.0",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "3.4.3",
+    "sanitize-filename": "^1.6.3",
+    "ytdl-core": "^4.0.4"
+  },
+  "devDependencies": {
+    "typescript": "3.8.3"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "author": {
+    "name": "ytb2mp3"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "license": "MIT",
+  "types": "./typings/index.d.ts",
+  "proxy": "http://localhost:8080/"
+}
