@@ -23,7 +23,7 @@
     "heroku-postbuild": "npm run install-client && npm run build",
     "start": "node server.js",
     "client": "cd client && npm start",
-    "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon server.js\" \"npm run client\""
+    "dev": "concurrently -n 'server,client' -c 'red,green'  \"node server.js\" \"npm run client\""
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",

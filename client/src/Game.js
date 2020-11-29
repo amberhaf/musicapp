@@ -53,14 +53,17 @@ class Game extends Component {
     this.setState({ play: false})
     //var url='http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3';
     audio.stop();
-    var title="./"+random+".mp3";
-    var song = title;
-    
+    var _this = this;
+    // this.setState({random: random[0].fileName})}
     fetch('/api/customers')
-      .then(res => res.json())
-      .then(customers => this.setState({customers}, () => console.log('Customers fetched...', customers)));
-
-    audio = new Pizzicato.Sound(song, function() {
+    .then(function(response) {
+      return response.json();
+      })
+      .then(function(random){
+        var title="./"+random[0].fileName;
+        console.log(title);
+        _this.setState({ random: random[0].fileName });
+      audio = new Pizzicato.Sound(title, function() {
       num = Math.floor(Math.random() * 3);
       if(num===0)
       {
@@ -76,6 +79,7 @@ class Game extends Component {
       }
       audio.play();
     });
+  });
   }
 
   render() {
@@ -104,7 +108,7 @@ class Play extends Component {
       <div className="PlayDisplay">
         <button onClick={start}>Start</button>
         <p>
-         {/* Random Song:<b>{random}</b>*/}
+         Random Song:<b>{random}</b>
         </p>
         <p>The song will play with random effects applied to it</p>
       </div>

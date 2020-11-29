@@ -4,11 +4,8 @@ const app = express();
 
 app.get('/api/customers', (req, res) => {
   const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-    {id: 3, firstName: 'Mary', lastName: 'Swanson'},
+    {fileName: results.shift()}
   ];
-
   res.json(customers);
 });
 
@@ -18,13 +15,20 @@ app.listen(port, () => `Server running on port ${port}`);
 
 var Downloader = require("./downloader");
 // Import npm packages
+var arr=["B83ZmB-9m-A","by3yRdlQvzs","PLLNMtg6QEY4ePU7aQg5zCYx08HU3bNCgp","o_1aF54DO60"];
+var results=[];
 var dl = new Downloader();
-var i=0;
-dl.getMP3({videoId: "B83ZmB-9m-A"}, function(err,res){
-    i++;
-    if(err)
-        throw err;
-    else{
-        console.log("Song "+ i + " was downloaded: " + res.file);
-    }
-});
+for(var i=0; i<3; i++)
+{ 
+  var video=arr[i];
+  dl.getMP3({videoId: video}, function(err,res){
+      if(err)
+          throw err;
+      else{
+          console.log("Song "+ i + " was downloaded: " + res.file);
+          var temp=res.file
+          var r = temp.split("public/");
+          results.push(r[1]);
+      }
+  });
+}
