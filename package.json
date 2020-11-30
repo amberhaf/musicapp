@@ -20,7 +20,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build",
     "start": "node server.js",
     "client": "cd client && npm start",
     "dev": "concurrently -n 'server,client' -c 'red,green'  \"node server.js\" \"npm run client\""
@@ -29,22 +28,20 @@
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "async": "^3.2.0",
     "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
     "browser-router": "0.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "fluent-ffmpeg": "2.1.2",
     "morgan": "^1.10.0",
-    "body-parser": "^1.19.0",
-    "howler": "^2.2.1",
     "pizzicato": "^0.6.4",
     "progress-stream": "^2.0.0",
     "react": "17.0.0",
     "react-dom": "17.0.0",
-    "react-howler": "^4.0.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "sanitize-filename": "^1.6.3",
-    "ytdl-core": "^4.0.4"
+    "ytdl-core": "^4.1.1"
   },
   "devDependencies": {
     "typescript": "3.8.3"
@@ -63,5 +60,5 @@
   },
   "license": "MIT",
   "types": "./typings/index.d.ts",
-  "proxy": "http://localhost:8080/"
+  "proxy": "http://localhost:5000/"
 }

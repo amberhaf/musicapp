@@ -36,7 +36,18 @@ class Game extends Component {
   }
   
   onGuessChange(event) {
+      fetch('http://localhost:5000/api/addUser' , {
+    method: "POST",
+    headers: {
+    'Content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*'
+      }
+      ,
+      body: JSON.stringify({fileName: 'dnkf'})
+    });
     let random = this.state.random;
+
     let correct = this.state.correct;
     correct = correct + 1;
     if (random.toLowerCase() === event.target.value.toLowerCase()) {
@@ -46,12 +57,10 @@ class Game extends Component {
     this.setState({ searchTerm: event.target.value });
   }
   start() {
-    
-    let num = Math.floor(Math.random() * 5);
-    let random = localSpotify[num].title;
-    this.setState({ random: random });
+   let num = Math.floor(Math.random() * 5);
+    //let random = localSpotify[num].title;
+   // this.setState({ random: random });
     this.setState({ play: false})
-    //var url='http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3';
     audio.stop();
     var _this = this;
     // this.setState({random: random[0].fileName})}
@@ -60,7 +69,7 @@ class Game extends Component {
       return response.json();
       })
       .then(function(random){
-        var title="./"+random[0].fileName;
+        var title="./"+random[0].fileName+'.mp3';;
         console.log(title);
         _this.setState({ random: random[0].fileName });
       audio = new Pizzicato.Sound(title, function() {

@@ -1,6 +1,12 @@
 const express = require('express');
-
+const morgan = require('morgan');
+const path = require('path');
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(morgan('tiny'));
+var cors = require('cors')
+app.use(cors())
 
 app.get('/api/customers', (req, res) => {
   const customers = [
@@ -9,26 +15,28 @@ app.get('/api/customers', (req, res) => {
   res.json(customers);
 });
 
+
+app.post('/api/addUser', (req, res) => {
+  const data = req.body;
+  console.log(req.body.fileName);
+  res.send('POST request to the homepage')
+  });
+
 const port = 5000;
 
 app.listen(port, () => `Server running on port ${port}`);
 
-var Downloader = require("./downloader");
-// Import npm packages
-var arr=["B83ZmB-9m-A","by3yRdlQvzs","PLLNMtg6QEY4ePU7aQg5zCYx08HU3bNCgp","o_1aF54DO60"];
+const fs = require('fs');
+const ytdl = require('ytdl-core');
+// TypeScript: import ytdl from 'ytdl-core'; with --esModuleInterop
+// TypeScript: import * as ytdl from 'ytdl-core'; with --allowSyntheticDefaultImports
+// TypeScript: import ytdl = require('ytdl-core'); with neither of the above
+var arr=['x3bfa3DZ8JM','wYYQpTbBSBM','bpOSxM0rNPM','JJ9IX4zgyLs','Bag1gUxuU0g']
 var results=[];
-var dl = new Downloader();
-for(var i=0; i<3; i++)
-{ 
-  var video=arr[i];
-  dl.getMP3({videoId: video}, function(err,res){
-      if(err)
-          throw err;
-      else{
-          console.log("Song "+ i + " was downloaded: " + res.file);
-          var temp=res.file
-          var r = temp.split("public/");
-          results.push(r[1]);
-      }
-  });
+for(var i=0; i<5; i++)
+{
+  var id=arr[i];
+  ytdl('http://www.youtube.com/watch?v='+id)
+  .pipe(fs.createWriteStream('./client/public/'+id+'.mp3'));
+  results.push(id);
 }
