@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Songs } from "./Songs.js";
 import Pizzicato from 'pizzicato';
-const axios = require('axios');
 
 const localSpotify = Songs;
 var audio = new Pizzicato.Sound('./wait.mp3');
@@ -36,18 +35,7 @@ class Game extends Component {
   }
   
   onGuessChange(event) {
-      fetch('http://localhost:5000/api/addUser' , {
-    method: "POST",
-    headers: {
-    'Content-type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': '*'
-      }
-      ,
-      body: JSON.stringify({fileName: 'dnkf'})
-    });
     let random = this.state.random;
-
     let correct = this.state.correct;
     correct = correct + 1;
     if (random.toLowerCase() === event.target.value.toLowerCase()) {
@@ -64,12 +52,12 @@ class Game extends Component {
     audio.stop();
     var _this = this;
     // this.setState({random: random[0].fileName})}
-    fetch('/api/customers')
+    fetch('/api/getSong')
     .then(function(response) {
       return response.json();
       })
       .then(function(random){
-        var title="./"+random[0].fileName+'.mp3';;
+        var title="./"+random[0].fileName+'.mp3';
         console.log(title);
         _this.setState({ random: random[0].fileName });
       audio = new Pizzicato.Sound(title, function() {

@@ -1,13 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Game from "./Game";
-import Music from "./Music";
+import Genre from "./Genre";
 
 const App = () => (
   <BrowserRouter>
     <div className="container">
       <Switch>
-        <Route component={Game} path="/" exact={true} />
+        <Route component={Game} path="/game" exact={true} />
+        <Route component={Genre} path="/" exact={true} />
       </Switch>
     </div>
   </BrowserRouter>
