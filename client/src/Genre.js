@@ -11,6 +11,21 @@ class Genre extends Component {
     this.onGenreChange = this.onGenreChange.bind(this);
     this.play = this.play.bind(this);
   }
+  componentDidMount() {
+    var _this = this;
+      console.log("this works");
+      fetch('/api/getGenre')
+    .then(function(response) {
+      return response.json();
+      })
+      .then(function(data){
+        console.log('Success:', data[0].downloaded);
+        _this.setState({ downloaded: data[0].downloaded});
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
   
   onGenreChange(e) {
     this.setState({genre: e.target.value });

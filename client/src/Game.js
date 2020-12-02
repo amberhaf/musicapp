@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Songs } from "./Songs.js";
 import Pizzicato from 'pizzicato';
+import { Link } from "react-router-dom";
 
 const localSpotify = Songs;
 var audio = new Pizzicato.Sound('./wait.mp3');
@@ -27,29 +28,72 @@ class Game extends Component {
       searchTerm: "",
       random: "",
       correct: 0,
+      rounds: 0,
       globalArray: localSpotify,
       play: false,
     };
     this.onGuessChange = this.onGuessChange.bind(this);
     this.start = this.start.bind(this);
+    this.begin = this.begin.bind(this);
+    this.clear = this.clear.bind(this);
   }
   
   onGuessChange(event) {
     let random = this.state.random;
     let correct = this.state.correct;
+    let round = this.state.rounds;
     correct = correct + 1;
     if (random.toLowerCase() === event.target.value.toLowerCase()) {
       this.setState({ correct: correct });
-      this.start();
+      if(round < 6)
+      {
+        this.start();
+      }
+      else
+      {
+        this.setState({ rounds: 6 });
+      }
     }
     this.setState({ searchTerm: event.target.value });
   }
+  begin() {
+    this.setState({ rounds: 0});
+    this.setState({ correct: 0});
+    this.start();
+    audio.stop();
+  }
+  clear() {
+    var _this = this;
+    var boo = true;
+    fetch('/api/clear' , {
+    method: "POST",
+    headers: {
+    'Content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*'
+      },
+      body: JSON.stringify({fileName: boo})
+  }).then(response => response.json())
+  .then(function(data){
+    console.log('Success:', data[0].downloaded);
+    _this.setState({ downloaded: data[0].downloaded});
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+  }
   start() {
-   let num = Math.floor(Math.random() * 5);
+    let round = this.state.rounds;
+    round = round + 1;
+    this.setState({rounds: round });
+    let num = Math.floor(Math.random() * 5);
     //let random = localSpotify[num].title;
    // this.setState({ random: random });
     this.setState({ play: false})
     audio.stop();
+    audio.removeEffect(ringModulator);
+    audio.removeEffect(tremolo);
+    audio.removeEffect(stereoPanner);
     var _this = this;
     // this.setState({random: random[0].fileName})}
     fetch('/api/getSong')
@@ -83,10 +127,11 @@ class Game extends Component {
     return (
       <div className="App">
         <h1>Song guessing app</h1> <br />
-        <Play random={this.state.random} audio={this.state.audio} start={this.start} />
+        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds}/>
         <Guess
           searchTerm={this.state.searchTerm}
           correct={this.state.correct}
+          rounds={this.state.rounds}
           onChange={this.onGuessChange}
           globalArray={this.state.globalArray}
         />
@@ -99,15 +144,36 @@ class Play extends Component {
   render() {
     const random = this.props.random;
     const start = this.props.start;
+    const clear = this.props.clear;
+    const begin = this.props.begin;
     const audio = this.props.audio;
+    const rounds = this.props.rounds;
+    const correct = this.props.correct;
 
     return (
       <div className="PlayDisplay">
-        <button onClick={start}>Start</button>
+        {(rounds<6) && (
+        <div>
+         {(rounds===0) &&
+        (<button onClick={begin}>Start</button>)}
+        {(rounds!==0 && rounds<6) &&
+        (<button onClick={start}>Next</button>)}
+        <button> <Link to="/">New Game</Link></button>
         <p>
          Random Song:<b>{random}</b>
         </p>
         <p>The song will play with random effects applied to it</p>
+        </div>
+        )}
+
+        {(rounds===6) && (
+        <div>
+        <p>Game Over</p>
+        <p>You got {correct} out of {rounds}</p>
+        <button onClick={clear}> <Link to="/">New Game</Link></button>
+        </div>
+        )}
+
       </div>
     );
   }
@@ -133,6 +199,7 @@ class Guess extends Component {
     const arrayPassedAsParameter = this.props.globalArray;
     const searchTerm = this.props.searchTerm;
     const correct = this.props.correct;
+    const rounds = this.props.rounds;
     return (
       <div className="GuessForm">
         <form>
@@ -144,6 +211,7 @@ class Guess extends Component {
           />
         </form>
         <h3>Correct guesses: {correct}</h3>
+        <h3>round: {rounds}</h3>
 
         <h3>Suggestions</h3>
         {arrayPassedAsParameter
