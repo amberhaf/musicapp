@@ -61,12 +61,13 @@ class Genre extends Component {
             <option value="pop">Pop</option>
             <option value="rap">Rap</option>
           </select>
-          <button onClick={this.play}>
+          <button className="b" onClick={this.play}>
             Submit
           </button>
           <br/>
           {(this.state.downloaded===true) &&
-        (<button><Link to="/game">Play</Link></button>)}
+        (<div><button><Link to="/game">Single Player</Link></button>
+        <button><Link to="/">Two Player</Link></button></div>)}
         </div>
       );
   } 

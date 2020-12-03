@@ -3,3 +3,11 @@
   text-align: center;
   background-image: "C:/Users/Deirdre Walsh/Documents/cs322 background images/" 
 }
+
+.b{
+  background-color: red;
+}
+
+*{
+  background-color:aqua;
+}
