@@ -64,24 +64,8 @@ class Game extends Component {
     audio.stop();
   }
   clear() {
-    var _this = this;
-    var boo = true;
-    fetch('/api/clear' , {
-    method: "POST",
-    headers: {
-    'Content-type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': '*'
-      },
-      body: JSON.stringify({genre: boo})
-  }).then(response => response.json())
-  .then(function(data){
-    console.log('Success:', data[0].downloaded);
-    _this.setState({ downloaded: data[0].downloaded});
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+    audio.stop();
+    this.props.history.push("/");
   }
   start() {
     let round = this.state.rounds;
@@ -159,7 +143,7 @@ class Play extends Component {
         (<button onClick={begin}>Start</button>)}
         {(rounds!==0 && rounds<6) &&
         (<button onClick={start}>Next</button>)}
-        <button> <Link to="/">New Game</Link></button>
+        <button onClick={clear}>New Game</button>
         <p>
          Random Song:<b>{random}</b>
         </p>
