@@ -7,28 +7,41 @@ class Genre extends Component {
     this.state = {
       genre: "",
       downloaded: false,
+      content:"",
     };
     this.onGenreChange = this.onGenreChange.bind(this);
+    this.handleChangeContent = this.handleChangeContent.bind(this);
     this.play = this.play.bind(this);
+    this.playlist = this.playlist.bind(this);
   }
   componentDidMount() {
     var _this = this;
-      console.log("this works");
-      fetch('/api/getGenre')
-    .then(function(response) {
-      return response.json();
-      })
-      .then(function(data){
-        console.log('Success:', data[0].downloaded);
-        _this.setState({ downloaded: data[0].downloaded});
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    var boo = true;
+    fetch('/api/clear' , {
+    method: "POST",
+    headers: {
+    'Content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*'
+      },
+      body: JSON.stringify({genre: boo})
+  }).then(response => response.json())
+  .then(function(data){
+    console.log('Success:', data[0].downloaded);
+    _this.setState({ downloaded: data[0].downloaded});
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
   }
   
   onGenreChange(e) {
     this.setState({genre: e.target.value });
+  }
+  handleChangeContent(e) {
+    this.setState({
+      content: e.target.value
+    });
   }
 
   play(e) {
@@ -41,7 +54,27 @@ class Genre extends Component {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*'
       },
-      body: JSON.stringify({fileName: genre})
+      body: JSON.stringify({genre: genre})
+  }).then(response => response.json())
+  .then(function(data){
+    console.log('Success:', data[0].downloaded);
+    _this.setState({ downloaded: data[0].downloaded});
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+  }
+  playlist(e) {
+    var _this = this;
+    var content=this.state.content;
+    fetch('/api/choosePlaylist' , {
+    method: "POST",
+    headers: {
+    'Content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*'
+      },
+      body: JSON.stringify({genre: content})
   }).then(response => response.json())
   .then(function(data){
     console.log('Success:', data[0].downloaded);
@@ -61,8 +94,21 @@ class Genre extends Component {
             <option value="pop">Pop</option>
             <option value="rap">Rap</option>
           </select>
+          <h1>Enter Playlist</h1>
+          <textarea 
+            className="form-control"
+            placeholder="Contents"
+            onChange={this.handleChangeContent}
+            value={this.state.content}
+              type="text"
+              cols="30"
+              rows="1"
+              />
           <button className="b" onClick={this.play}>
-            Submit
+            Submit Genre
+          </button>
+          <button className="b" onClick={this.playlist}>
+            Submit Playlist
           </button>
           <br/>
           {(this.state.downloaded===true) &&

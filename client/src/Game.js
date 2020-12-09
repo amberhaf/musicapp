@@ -51,6 +51,7 @@ class Game extends Component {
       }
       else
       {
+        audio.stop();
         this.setState({ rounds: 6 });
       }
     }
@@ -72,7 +73,7 @@ class Game extends Component {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*'
       },
-      body: JSON.stringify({fileName: boo})
+      body: JSON.stringify({genre: boo})
   }).then(response => response.json())
   .then(function(data){
     console.log('Success:', data[0].downloaded);
@@ -86,25 +87,25 @@ class Game extends Component {
     let round = this.state.rounds;
     round = round + 1;
     this.setState({rounds: round });
+    audio.stop();
+    if(round<6)
+    {
     let num = Math.floor(Math.random() * 5);
     //let random = localSpotify[num].title;
    // this.setState({ random: random });
     this.setState({ play: false})
-    audio.stop();
     audio.removeEffect(ringModulator);
     audio.removeEffect(tremolo);
     audio.removeEffect(stereoPanner);
     var _this = this;
-    // this.setState({random: random[0].fileName})}
-    fetch('/api/getSong')
+    fetch('/api/getDetails')
     .then(function(response) {
       return response.json();
       })
       .then(function(random){
-        var title="./"+random[0].fileName+'.mp3';
-        console.log(title);
-        _this.setState({ random: random[0].fileName });
-      audio = new Pizzicato.Sound(title, function() {
+        _this.setState({ random: random[0].title });
+    });
+      audio = new Pizzicato.Sound('/api/getSong', function() {
       num = Math.floor(Math.random() * 3);
       if(num===0)
       {
@@ -120,14 +121,14 @@ class Game extends Component {
       }
       audio.play();
     });
-  });
+  }
   }
 
   render() {
     return (
       <div className="App">
         <h1>Song guessing app</h1> <br />
-        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds}/>
+        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct={this.state.correct}/>
         <Guess
           searchTerm={this.state.searchTerm}
           correct={this.state.correct}

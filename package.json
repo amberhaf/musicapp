@@ -41,7 +41,8 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "sanitize-filename": "^1.6.3",
-    "ytdl-core": "^4.1.1"
+    "ytdl-core": "^4.1.4",
+    "ytpl": "^2.0.0-alpha.3"
   },
   "devDependencies": {
     "typescript": "3.8.3"
