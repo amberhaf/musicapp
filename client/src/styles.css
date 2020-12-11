@@ -5,9 +5,29 @@
 }
 
 .b{
+  height: 60px;
+  line-height: 60px;  
+  width: 60px;  
+  border-radius: 50%;
   background-color: red;
+  text-align: center;
+  cursor: pointer;
+  margin:2%;
+}
+
+.loading{
+
+  margin-left: 2%;
+  margin-right: 2%;
 }
 
 *{
   background-color:aqua;
+}
+.genre{
+  width: 20%;
+  height: 0%;
+}
+.controls{
+  width: 3%;
 }
