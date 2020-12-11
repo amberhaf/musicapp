@@ -1,3 +1,7 @@
+*{
+  background-color:aqua;
+}
+
 .App {
   font-family: sans-serif;
   text-align: center;
@@ -21,13 +25,47 @@
   margin-right: 2%;
 }
 
-*{
-  background-color:aqua;
-}
 .genre{
   width: 20%;
   height: 0%;
 }
 .controls{
   width: 3%;
+}
+
+.wrapper{
+  height: 120px;
+  width: 120px;
+  position: relative;
+  text-align: center;
+  display: inline-block;
+}
+
+.dot {
+  height: 60px;
+  width: 60px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  padding-top: 10px;
+  position: absolute;
+  margin-left: 30px;
+  margin-top: 30px;
+}
+
+.record {
+  width: 120px;
+}
+
+.title{
+  display: inline-block;
+}
+
+.navbar{
+  background:#343a40;
+}
+
+.logo{
+  background:#343a40;
+  width: 15%;
 }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Spinner } from 'react-bootstrap'
+import { Spinner } from 'react-bootstrap';
+import Navbar from "./NavBar";
 
 class Genre extends Component {
   constructor(props) {
@@ -125,6 +126,8 @@ class Genre extends Component {
   render() {
       return(
         <div className="App">
+          <Navbar/>
+           <div>
           <h1>Choose Game</h1>
           {(this.state.genre==='pop') &&
           (
@@ -179,6 +182,7 @@ class Genre extends Component {
           {(this.state.downloaded===true) &&
         (<div><button><Link to="/game">Single Player</Link></button>
         <button><Link to="/">Two Player</Link></button></div>)}
+        </div>
         </div>
       );
   } 
