@@ -181,7 +181,7 @@ class Genre extends Component {
           <br/>
           {(this.state.downloaded===true) &&
         (<div><button><Link to="/game">Single Player</Link></button>
-        <button><Link to="/">Two Player</Link></button></div>)}
+        <button><Link to="/twoplayer">Two Player</Link></button></div>)}
         </div>
         </div>
       );

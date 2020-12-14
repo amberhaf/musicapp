@@ -26,7 +26,8 @@ class Game extends Component {
     this.state = {
       searchTerm: "",
       random: "",
-      correct: 0,
+      correct1: 0,
+      correct2: 0,
       rounds: 0,
       play: false,
       ready: false,
@@ -52,11 +53,19 @@ class Game extends Component {
 
   onGuessChange(event) {
     let random = this.state.random.toLowerCase();
-    let correct = this.state.correct;
     let round = this.state.rounds;
-    correct = correct + 1;
     if ((event.target.value.length >= 8 &&(random.includes(event.target.value.toLowerCase()))) || (random.toLowerCase() === event.target.value.toLowerCase())) {
-      this.setState({ correct: correct });
+      if(round%2===0)
+      {
+        let correct2 = this.state.correct2;
+        correct2 = correct2 + 1;
+        this.setState({ correct2: correct2 });
+      }
+      else{
+        let correct1 = this.state.correct1;
+        correct1 = correct1 + 1;
+        this.setState({ correct1: correct1 });
+      }
       this.setState({ searchTerm: "" });
       if (round < 6) {
         this.start();
@@ -72,7 +81,7 @@ class Game extends Component {
   }
   begin() {
     this.setState({ rounds: 0 });
-    this.setState({ correct: 0 });
+    this.setState({ correct1: 0 });
     this.start();
     audio.stop();
   }
@@ -116,28 +125,24 @@ class Game extends Component {
       });
     }
   }
-  _handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      console.log('do validate');
-    }
-  }
-
 
   render() {
     return (
       <div className="App">
         <Navbar/>
         <div className="wrapper correct">
-          <span className="dot">Correct {this.state.correct}</span>
+          <span className="dot">Player1 {this.state.correct1}</span>
           <img className="record" src="./record2.png" />
         </div>
         <h1 className="title">Melodify</h1>
         <div className="wrapper round">
-          <span className="dot">Round {this.state.rounds}</span>
+          <span className="dot">Player2 {this.state.correct2}</span>
           <img className="record" src="./record2.png" />
         </div>
          <br />
-        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct={this.state.correct} ready={this.state.ready} canClick={this.state.canClick} />
+        {(this.state.rounds % 2!==0 && this.state.rounds <= 6) && (<h3>Player 1's go</h3>)}
+        {(this.state.rounds % 2===0 && this.state.rounds !== 0) && (<h3>Player 2's go</h3>)}
+        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct1={this.state.correct1} ready={this.state.ready} canClick={this.state.canClick} />
         {(this.state.rounds < 6 && this.state.rounds>0) && (
           <div>
           <textarea 
@@ -164,7 +169,8 @@ class Play extends Component {
     const begin = this.props.begin;
     const audio = this.props.audio;
     const rounds = this.props.rounds;
-    const correct = this.props.correct;
+    const correct1 = this.props.correct1;
+    const correct2 = this.props.correct2;
     const ready = this.props.ready;
     const canClick = this.props.canClick;
 
@@ -186,7 +192,15 @@ class Play extends Component {
         {(rounds === 6 || ready==false) && (
           <div>
             <p>Game Over</p>
-            <p>You got {correct} out of {rounds}</p>
+            {(correct1>correct2) && (
+            <p>Player 1 won</p>
+            )}
+            {(correct1<correct2) && (
+            <p>Player 2 won</p>
+            )}
+            {(correct1===correct2) && (
+            <p>It's a draw</p>
+            )}
             <button onClick={clear}> <Link to="/">New Game</Link></button>
           </div>
         )}

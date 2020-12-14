@@ -26,11 +26,11 @@
 }
 
 .genre{
-  width: 20%;
-  height: 0%;
+  width: 300px;
+  height: auto;
 }
 .controls{
-  width: 3%;
+  width: 40px;
 }
 
 .wrapper{
@@ -57,6 +57,31 @@
   width: 120px;
 }
 
+@media only screen and (max-width: 600px) {
+  .wrapper{
+    height: 100px;
+    width: 100px;
+    position: relative;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .dot {
+    height: 60px;
+    width: 60px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    padding-top: 10px;
+    position: absolute;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+  
+  .record {
+    width: 100px;
+  }  
+}
 .title{
   display: inline-block;
 }

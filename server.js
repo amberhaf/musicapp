@@ -81,7 +81,6 @@ app.post('/api/choosePlaylist', async function (req, res) {
   console.log(req.body.genre);
   var input = req.body.genre;
   downloadByPlaylist(input, function(response) {
-    console.log(response); 
     res.json(response); 
     res.end();
   })
@@ -90,9 +89,7 @@ app.post('/api/choosePlaylist', async function (req, res) {
 app.post('/api/chooseGenre', function (req, res) {
   results = [];
   const data = req.body;
-  console.log(req.body.genre);
   downloadByGenre(function(response) {
-    console.log(response); 
     res.json(response); 
     res.end();
 })
@@ -100,7 +97,6 @@ app.post('/api/chooseGenre', function (req, res) {
 
 app.get('/api/getSong', (req, res) => {
   const songs = results.shift();
-  console.log(songs);
   var r = songs[0].id;
   res.sendFile(__dirname + '/songs/' + r + '.mp3');
 });
@@ -108,6 +104,14 @@ app.get('/api/getSong', (req, res) => {
 app.get('/api/getDetails', (req, res) => {
   const songs = results[0];
   res.send(songs);
+});
+
+app.get('/api/getReady', (req, res) => {
+  const ready = (results.length>=5);
+  const response = [{
+            ready: ready
+        }];
+  res.send(response);
 });
 
 app.post('/api/clear', (req, res) => {
