@@ -211,6 +211,7 @@ class Game extends Component {
     this.props.history.push("/");
   }
   start() {
+    this.setState({ searchTerm: "" });
     this.setState({ canClick: false });
     let round = this.state.rounds;
     round = round + 1;
@@ -219,9 +220,6 @@ class Game extends Component {
     if (round < 6) {
       let num = Math.floor(Math.random() * 15);
       this.setState({ play: false })
-      audio.removeEffect(ringModulator);
-      audio.removeEffect(tremolo);
-      audio.removeEffect(stereoPanner);
       var _this = this;
       fetch('/api/getDetails')
         .then(function (response) {

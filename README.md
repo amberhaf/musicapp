@@ -21,6 +21,4 @@ Navigate to the client folder within. Run `npm install`.
 
 ## Running
 
-Navigate to the outer project folder and run. Run `npm run dev`.
-
-### Basic example
+Navigate to the outer project folder. Run `npm run dev`.
