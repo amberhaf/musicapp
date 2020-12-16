@@ -46,19 +46,21 @@ function downloadByPlaylist(input, callback) {
   });
 }
 
-function downloadByGenre ( callback){  
-  var arr = ['x3bfa3DZ8JM', 'JJ9IX4zgyLs', 'wYYQpTbBSBM', 'Bag1gUxuU0g', 'iDQcf9O5ex8'];
-  var names = ['name1', 'name2', 'name4', 'name5', 'name6'];
+function downloadByGenre (callback){  
+  var arr = songs;
   var count = 0;
-  for (var i = 0; i < 5; i++) {
-    var id = arr[i];
-    var title = names[i];
-    details = [{
-      id: id,
-      title: title
-    }];
+  for (var i = 0; i < arr.length; i++) {
+    var id = arr[i].url;
+    var title = arr[i].name;
+    if(arr[i].genre == Genre.state.genre)
+    {
+      details = [{
+        id: id,
+        title: title
+      }];
+    }
     results.push(details);
-    var stream = ytdl('http://www.youtube.com/watch?v=' + id)
+    var stream = ytdl(id)
       .pipe(fs.createWriteStream('./songs/' + id + '.mp3'));
     stream.on('finish', function () {
       count++;
