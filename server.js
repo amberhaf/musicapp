@@ -11,6 +11,8 @@ var cors = require('cors')
 app.use(cors())
 const fs = require('fs');
 const ytdl = require('ytdl-core');
+let Songs1 = fs.readFileSync('files.json');
+let Songs = JSON.parse(Songs1);
 var results = [];
 
 var ytpl = require('ytpl');
@@ -46,21 +48,20 @@ function downloadByPlaylist(input, callback) {
   });
 }
 
-function downloadByGenre (callback){  
-  var arr = songs;
+function downloadByGenre (genre, callback){  
+  var arr = Songs;
   var count = 0;
-  for (var i = 0; i < arr.length; i++) {
-    var id = arr[i].url;
-    var title = arr[i].name;
-    if(arr[i].genre == Genre.state.genre)
+  for (var i = 0; i < arr.songs.length; i++) {
+    var id = arr.songs[i].url;
+    var title = arr.songs[i].name;
+    if(arr.songs[i].genre === genre)
     {
-      details = [{
-        id: id,
-        title: title
-      }];
-    }
+    details = [{
+      id: id,
+      title: title
+    }];
     results.push(details);
-    var stream = ytdl(id)
+    var stream = ytdl('http://www.youtube.com/watch?v=' + id)
       .pipe(fs.createWriteStream('./songs/' + id + '.mp3'));
     stream.on('finish', function () {
       count++;
@@ -75,6 +76,7 @@ function downloadByGenre (callback){
       }
     });
   }
+  }
 }
 
 app.post('/api/choosePlaylist', async function (req, res) {
@@ -88,10 +90,11 @@ app.post('/api/choosePlaylist', async function (req, res) {
   })
 });
 
-app.post('/api/chooseGenre', function (req, res) {
+app.post('/api/chooseGenre', async function (req, res) {
   results = [];
   const data = req.body;
-  downloadByGenre(function(response) {
+  var genre = req.body.genre;
+  downloadByGenre(genre, function(response) {
     res.json(response); 
     res.end();
 })
