@@ -51,10 +51,26 @@ function downloadByPlaylist(input, callback) {
 function downloadByGenre (genre, callback){  
   var arr = Songs;
   var count = 0;
-  for (var i = 0; i < arr.songs.length; i++) {
-    var id = arr.songs[i].url;
-    var title = arr.songs[i].name;
-    if(arr.songs[i].genre === genre)
+  if(genre==='pop')
+  {
+    arr=arr.pop;
+  }
+  else if(genre==='hiphop')
+  {
+    arr=arr.hiphop;   
+  }
+  else if(genre==='rock')
+  {
+    arr=arr.rock;   
+  }
+  else if(genre==='electro')
+  {
+    arr=arr.electro;   
+  }
+  for (var i = 0; i < 5; i++) {
+    var id = arr[i].url;
+    var title = arr[i].name;
+    if(arr[i].genre === genre)
     {
     details = [{
       id: id,
