@@ -4,6 +4,7 @@ import Game from "./Game";
 import Genre from "./Genre";
 import About from "./About";
 import TwoPlayer from "./TwoPlayer";
+import Simple from "./Simple";
 
 const App = () => (
   <BrowserRouter>
@@ -13,6 +14,7 @@ const App = () => (
         <Route component={Genre} path="/" exact={true} />
         <Route component={About} path="/about" exact={true} />
         <Route component={TwoPlayer} path="/twoplayer" exact={true} />
+        <Route component={Simple} path="/simple" exact={true} />
       </Switch>
     </div>
   </BrowserRouter>

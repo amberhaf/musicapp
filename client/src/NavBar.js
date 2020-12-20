@@ -20,7 +20,8 @@ class NavBar extends React.Component {
             </Nav>
             <Nav className="mr-sm-2 navbar">
               <Nav.Link href="/about">About</Nav.Link>
-              <Nav.Link href="/">Play</Nav.Link>
+              <Nav.Link href="/">Effects Game</Nav.Link>
+              <Nav.Link href="/simple">Simple Game</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

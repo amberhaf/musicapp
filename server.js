@@ -20,7 +20,7 @@ var ytpl = require('ytpl');
 function downloadByPlaylist(input, callback) {
   var count = 0;
   ytpl(input).then(playlist => {
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 8; i++) {
       var id = playlist.items[i].id;
       var title = playlist.items[i].title;
       details = [{
@@ -33,7 +33,7 @@ function downloadByPlaylist(input, callback) {
     stream.on('finish', function () {
       count++;
       console.log("downloaded" + count);
-      if(count===5)
+      if(count===8)
       {
         console.log("download complete");
         var response = [{
@@ -67,7 +67,7 @@ function downloadByGenre (genre, callback){
   {
     arr=arr.electro;   
   }
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 8; i++) {
     var id = arr[i].url;
     var title = arr[i].name;
     if(arr[i].genre === genre)
@@ -82,7 +82,7 @@ function downloadByGenre (genre, callback){
     stream.on('finish', function () {
       count++;
       console.log("downloaded" + count);
-      if(count===5)
+      if(count===8)
       {
         console.log("download complete");
         var response = [{
@@ -128,7 +128,7 @@ app.get('/api/getDetails', (req, res) => {
 });
 
 app.get('/api/getReady', (req, res) => {
-  const ready = (results.length>=5);
+  const ready = (results.length>=8);
   const response = [{
             ready: ready
         }];

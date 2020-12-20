@@ -188,12 +188,12 @@ class Game extends Component {
     if ((event.target.value.length >= 8 && (random.includes(event.target.value.toLowerCase()))) || (random.toLowerCase() === event.target.value.toLowerCase())) {
       this.setState({ correct: correct });
       this.setState({ searchTerm: "" });
-      if (round < 6) {
+      if (round < 9) {
         this.start();
       }
       else {
         audio.stop();
-        this.setState({ rounds: 6 });
+        this.setState({ rounds: 9 });
       }
     }
     else {
@@ -217,7 +217,7 @@ class Game extends Component {
     round = round + 1;
     this.setState({ rounds: round });
     audio.stop();
-    if (round < 6) {
+    if (round < 9) {
       let num = Math.floor(Math.random() * 15);
       this.setState({ play: false })
       var _this = this;
@@ -320,7 +320,7 @@ class Game extends Component {
         </div>
         <br />
         <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct={this.state.correct} ready={this.state.ready} canClick={this.state.canClick} />
-        {(this.state.rounds < 6 && this.state.rounds > 0) && (
+        {(this.state.rounds < 9 && this.state.rounds > 0) && (
           <div>
             <textarea
               className="form-control"
@@ -352,23 +352,23 @@ class Play extends Component {
 
     return (
       <div className="PlayDisplay">
-        {(rounds < 6 && ready == true) && (
+        {(rounds < 9 && ready == true) && (
           <div>
             {(rounds === 0) &&
               (<button onClick={begin}>Start</button>)}
-            {(rounds !== 0 && rounds < 6 && canClick == true) &&
+            {(rounds !== 0 && rounds < 9 && canClick == true) &&
               (<button onClick={start}>Next</button>)}
-            {(rounds !== 0 && rounds < 6 && canClick == false) &&
+            {(rounds !== 0 && rounds < 9 && canClick == false) &&
               (<button>Next</button>)}
             <button onClick={clear}>New Game</button>
             <p>The song will play with random effects applied to it</p>
           </div>
         )}
 
-        {(rounds === 6 || ready == false) && (
+        {(rounds === 9 || ready == false) && (
           <div>
             <p>Game Over</p>
-            <p>You got {correct} out of {rounds}</p>
+            <p>You got {correct} out of 8</p>
             <button onClick={clear}> <Link to="/">New Game</Link></button>
           </div>
         )}
