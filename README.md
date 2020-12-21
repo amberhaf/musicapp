@@ -17,6 +17,7 @@ To run this project, you need to have node js installed on your computer
 #### Install module dependencies
 
 Navigate to the folder where you checked out the project to in your console. Run `npm install`.
+Run `npm install ytdl-core@latest`.
 Navigate to the client folder within. Run `npm install`.
 
 ## Running

@@ -27,10 +27,10 @@ function downloadByPlaylist(input, callback) {
         id: id,
         title: title
       }];
-      results.push(details);
       var stream = ytdl('http://www.youtube.com/watch?v=' + id)
       .pipe(fs.createWriteStream('./songs/' + id + '.mp3'));
     stream.on('finish', function () {
+      results.push(details);
       count++;
       console.log("downloaded" + count);
       if(count===8)
@@ -67,18 +67,18 @@ function downloadByGenre (genre, callback){
   {
     arr=arr.electro;   
   }
-  for (var i = 0; i < 8; i++) {
-    var id = arr[i].url;
-    var title = arr[i].name;
-    if(arr[i].genre === genre)
-    {
+  for (var i = 0; i < arr.length; i++) {
+    let n = Math.floor(Math.random() * arr.length)-1;
+    var id = arr[n].url;
+    var title = arr[n].name;
     details = [{
       id: id,
       title: title
     }];
+    console.log(title);
     results.push(details);
     var stream = ytdl('http://www.youtube.com/watch?v=' + id)
-      .pipe(fs.createWriteStream('./songs/' + id + '.mp3'));
+      .pipe(fs.createWriteStream('./songs/' + id + '.mp3'))
     stream.on('finish', function () {
       count++;
       console.log("downloaded" + count);
@@ -90,8 +90,9 @@ function downloadByGenre (genre, callback){
         }];
         callback(response);  
       }
+    }).on('error', (error) => {
+      reject(error);
     });
-  }
   }
 }
 

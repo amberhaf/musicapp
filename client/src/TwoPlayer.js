@@ -150,6 +150,9 @@ class Game extends Component {
       play: false,
       ready: false,
       canClick: true,
+      right: "red",
+      guessed: true,
+      lastSong: "",
     };
     this.onGuessChange = this.onGuessChange.bind(this);
     this.start = this.start.bind(this);
@@ -173,6 +176,7 @@ class Game extends Component {
     let random = this.state.random.toLowerCase();
     let round = this.state.rounds;
     if ((event.target.value.length >= 9 &&(random.includes(event.target.value.toLowerCase()))) || (random.toLowerCase() === event.target.value.toLowerCase())) {
+      this.setState({ guessed: true });
       if(round%2===0)
       {
         let correct2 = this.state.correct2;
@@ -209,9 +213,35 @@ class Game extends Component {
   start() {
     this.setState({ searchTerm: "" });
     this.setState({ canClick: false});
+    var ran=this.state.random;
+    this.setState({ lastSong: ran });
     let round = this.state.rounds;
     round = round + 1;
     this.setState({ rounds: round });
+    audio.removeEffect(fastFlang);
+    audio.removeEffect(slowFlang);
+    audio.removeEffect(pitchRingMod);
+    audio.removeEffect(regHighPass);
+    audio.removeEffect(distortionRingMod);
+    audio.removeEffect(regHighPass);
+    audio.removeEffect(dubDelay);
+    audio.removeEffect(reverseVerb);
+    audio.removeEffect(telephoneHighPass);
+    audio.removeEffect(telephoneLowPass);
+    audio.removeEffect(slowTremolo);
+    audio.removeEffect(shortVerb);
+    audio.removeEffect(longVerb);
+    audio.removeEffect(reverseVerb);
+    audio.removeEffect(elvis);
+    audio.removeEffect(distortion);
+    audio.removeEffect(extremeDelay);
+    audio.removeEffect(quadraFuzz);
+    audio.removeEffect(fastTremolo);
+    audio.removeEffect(slowFlang);
+    audio.removeEffect(telephoneLowPass);
+    audio.removeEffect(extremeLowPass);
+    audio.removeEffect(elvis);
+    audio.removeEffect(reverseVerb);
     audio.stop();
     if (round < 9) {
       let num = Math.floor(Math.random() * 15);
@@ -289,6 +319,14 @@ class Game extends Component {
         // else if (num === 17) { //Work in Progress
         //  audio.addEffect(pingPong);
         // }
+        if(_this.state.guessed===true){
+          _this.setState({ right: "green" });
+        }
+        else
+        {
+          _this.setState({ right: "red" });          
+        }
+        _this.setState({ guessed: false });
         audio.play();
         _this.setState({ canClick: true});
       });
@@ -311,7 +349,8 @@ class Game extends Component {
          <br />
         {(this.state.rounds % 2!==0 && this.state.rounds < 9) && (<h3>Player 1's go</h3>)}
         {(this.state.rounds % 2===0 && this.state.rounds !== 0 && this.state.rounds < 9) && (<h3>Player 2's go</h3>)}
-        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct1={this.state.correct1} ready={this.state.ready} canClick={this.state.canClick} />
+        {( this.state.rounds > 1) && ( <p className={(this.state.right)}>The last song was <b>{this.state.lastSong}</b></p> )}
+        <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct1={this.state.correct1} correct2={this.state.correct2} ready={this.state.ready} canClick={this.state.canClick} />
         {(this.state.rounds < 9 && this.state.rounds>0) && (
           <div>
           <textarea 
@@ -361,13 +400,13 @@ class Play extends Component {
         {(rounds === 9 || ready==false) && (
           <div>
             <p>Game Over</p>
-            {(correct1>correct2) && (
+            {(correct1 > correct2) && (
             <p>Player 1 won</p>
             )}
-            {(correct1<correct2) && (
+            {(correct1 < correct2) && (
             <p>Player 2 won</p>
             )}
-            {(correct1===correct2) && (
+            {(correct1 == correct2) && (
             <p>It's a draw</p>
             )}
             <button onClick={clear}> <Link to="/">New Game</Link></button>
