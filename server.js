@@ -67,10 +67,15 @@ function downloadByGenre (genre, callback){
   {
     arr=arr.electro;   
   }
+  for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+  }
   for (var i = 0; i < arr.length; i++) {
-    let n = Math.floor(Math.random() * arr.length)-1;
-    var id = arr[n].url;
-    var title = arr[n].name;
+    var id = arr[i].url;
+    var title = arr[i].name;
     details = [{
       id: id,
       title: title
