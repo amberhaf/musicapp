@@ -50,7 +50,7 @@ class Genre extends Component {
     var pos=this.state.pos;
     var list=this.state.list;
     pos++;
-    if(pos==5)
+    if(pos===5)
     {
       pos=0;
     }
@@ -63,7 +63,7 @@ class Genre extends Component {
     var pos=this.state.pos;
     var list=this.state.list;
     pos--;
-    if(pos==-1)
+    if(pos===-1)
     {
       pos=4
     }
@@ -131,44 +131,44 @@ class Genre extends Component {
           <h1>Choose Game</h1>
           {(this.state.genre==='pop') &&
           (
-          <img className='genre' src='./pop.jpg' />
+          <img className='genre' src='./pop.jpg'  alt="pop"/>
           )}
           {(this.state.genre==='rock') &&
           (
-          <img className='genre' src='./rock.jpg' />
+          <img className='genre' src='./rock.jpg'  alt="rock"/>
           )}
           {(this.state.genre==='hiphop') &&
           (
-          <img className='genre' src='./hiphop.jpg' />
+          <img className='genre' src='./hiphop.jpg'  alt="hiphop"/>
           )}
           {(this.state.genre==='electro') &&
           (
-          <img className='genre' src='./electro.PNG' />
+          <img className='genre' src='./electro.jpg'  alt="electro"/>
           )}
           {(this.state.genre==='custom') &&
           (
-          <img className='genre' src='./custom.jpg' />
+          <img className='genre' src='./custom.jpg'  alt="custom"/>
           )}
           <h3>{this.state.genre}</h3>
           {(this.state.genre==='custom') &&
           (
-            <div>
+            <div >
             <textarea 
-            className="form-control"
+            className="form"
             placeholder="Enter Playlist url"
             onChange={this.handleChangeContent}
             value={this.state.content}
               type="text"
-              cols="30"
+              cols="80"
               rows="1"
               />
           </div>
           )}
-          <p>
-          <img className="controls" onClick={this.moveBack} src='rewind.svg'/>
+          <div>
+          <img className="controls" onClick={this.moveBack} src='rewind.svg' alt="back"/>
           {(this.state.downloading===false) && (
           <button className="b" onClick={this.play}>
-            Submit
+            PLAY
           </button>
           )}
           {(this.state.downloading===true) && (
@@ -176,12 +176,13 @@ class Genre extends Component {
             <span className="sr-only">Loading...</span>
           </Spinner>
           )}
-          <img className="controls" onClick={this.moveForward} src='fast-Forward.svg'/>
-          </p>
+          <img className="controls" onClick={this.moveForward} src='fast-Forward.svg' alt="forward"/>
+          </div>
           <br/>
           {(this.state.downloaded===true) &&
-        (<div><button><Link to="/game">Single Player</Link></button>
-        <button><Link to="/twoplayer">Two Player</Link></button></div>)}
+        (<div><Link to="/game">
+           <button className="b1">Single Player</button></Link>
+        <Link to="/twoplayer"><button className="b1">Two Player</button></Link></div>)}
         </div>
         </div>
       );

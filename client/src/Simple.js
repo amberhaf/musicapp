@@ -12,11 +12,9 @@ class Simple extends Component {
             searchTerm: "",
             random: "",
             url: "",
-            correct: 0,
             globalArray: localSpotify,
             correct: 0,
             rounds: 0,
-            play: false,
             lastSong: "",
         };
         this.onGuessChange = this.onGuessChange.bind(this);
@@ -72,26 +70,26 @@ class Simple extends Component {
             <div className="App">
                 <Navbar />
                 <div className="wrapper correct">
-                    <span className="dot">Correct {this.state.correct}</span>
-                    <img className="record" src="./record2.png" />
+                    <span className="dot">Correct<br/>{this.state.correct}</span>
+                    <img className="record" src="./record2.png"  alt="record"/>
                 </div>
                 <h1 className="title">Melodify</h1>
                 <div className="wrapper round">
-                    <span className="dot">Round {this.state.rounds}</span>
-                    <img className="record" src="./record2.png" />
+                    <span className="dot">Round<br/>{this.state.rounds}</span>
+                    <img className="record" src="./record2.png"  alt="record"/>
                 </div>
                 <br />
                 {( this.state.rounds > 1) && ( <p>The last song was <b>{this.state.lastSong}</b></p> )}
-                <Play random={this.state.random} start={this.start} url={this.state.url} start={this.start} begin={this.begin} rounds={this.state.rounds} />
+                <Play random={this.state.random} url={this.state.url} start={this.start} begin={this.begin} rounds={this.state.rounds} />
                 {(this.state.rounds < 9 && this.state.rounds > 0) && (
                     <div>
                         <textarea
-                            className="form-control"
+                            className="form"
                             placeholder="Type your guess here"
                             value={this.state.searchTerm}
                             onChange={this.onGuessChange}
                             type="text"
-                            cols="20"
+                            cols="80"
                             rows="1"
                         />
                     </div>
@@ -103,7 +101,6 @@ class Simple extends Component {
 
 class Play extends Component {
     render() {
-        const random = this.props.random;
         const start = this.props.start;
         const url = this.props.url;
         const begin = this.props.begin;
@@ -115,8 +112,8 @@ class Play extends Component {
                 {(
                     <div>
                         {(rounds < 9 && rounds !== 0) &&
-                        (<button onClick={start}>Next</button>)}
-                        <button onClick={begin}>New Game</button>
+                        (<button className="b1" onClick={start}>Next</button>)}
+                        <button className="b1" onClick={begin}>New Game</button>
                     </div>
                 )}
 

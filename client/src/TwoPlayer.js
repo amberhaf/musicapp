@@ -3,7 +3,7 @@ import Pizzicato from 'pizzicato';
 import { Link } from "react-router-dom";
 import Navbar from "./NavBar";
 
-var audio = new Pizzicato.Sound('./wait.mp3');
+var audio = new Pizzicato.Sound('./noise.mp3');
 
 //REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS//
 var shortVerb = new Pizzicato.Effects.Reverb({
@@ -168,7 +168,12 @@ class Game extends Component {
     })
     .then(function (back) {
       console.log(back[0].ready);
-      _this.setState({ ready: back[0].ready });
+      if(back[0].ready){
+        window.setTimeout(myFunction, 2000)
+      }
+    function myFunction() {
+      _this.setState({ ready: true });
+    }
     });
   }
 
@@ -208,11 +213,13 @@ class Game extends Component {
   }
   clear() {
     audio.stop();
+    noise.stop();
     this.props.history.push("/");
   }
   start() {
     this.setState({ searchTerm: "" });
     this.setState({ canClick: false});
+    noise.stop();
     var ran=this.state.random;
     this.setState({ lastSong: ran });
     let round = this.state.rounds;
@@ -253,7 +260,8 @@ class Game extends Component {
         })
         .then(function (random) {
           _this.setState({ random: random[0].title });
-        });
+        })
+        .then(function () {
       audio = new Pizzicato.Sound('/api/getSong', function () {
         num = Math.floor(Math.random() * 3);
         if (num === 0) { //Fast Flanger
@@ -310,15 +318,6 @@ class Game extends Component {
           audio.addEffect(elvis);
           audio.addEffect(reverseVerb);
         }
-        // else if (num === 15) { //Work in Progress
-        //   audio.playbackRate = 0.5;
-        // }
-        // else if (num === 16) { //Work in Progress
-        //   audio.playbackRate = 2;
-        // }
-        // else if (num === 17) { //Work in Progress
-        //  audio.addEffect(pingPong);
-        // }
         if(_this.state.guessed===true){
           _this.setState({ right: "green" });
         }
@@ -328,9 +327,14 @@ class Game extends Component {
         }
         _this.setState({ guessed: false });
         audio.play();
-        _this.setState({ canClick: true});
       });
-    }
+      }).then(function () {
+        window.setTimeout(myFunction, 5000)
+      });
+      }
+      function myFunction() {
+        _this.setState({ canClick: true });
+      }
   }
 
   render() {
@@ -338,13 +342,13 @@ class Game extends Component {
       <div className="App">
         <Navbar/>
         <div className="wrapper correct">
-          <span className="dot">Player1 {this.state.correct1}</span>
-          <img className="record" src="./record2.png" />
+          <span className="dot">Player1 <br/>{this.state.correct1}</span>
+          <img className="record" src="./record2.png" alt="record"/>
         </div>
         <h1 className="title">Melodify</h1>
         <div className="wrapper round">
-          <span className="dot">Player2 {this.state.correct2}</span>
-          <img className="record" src="./record2.png" />
+          <span className="dot">Player2 <br/>{this.state.correct2}</span>
+          <img className="record" src="./record2.png" alt="record"/>
         </div>
          <br />
         {(this.state.rounds % 2!==0 && this.state.rounds < 9) && (<h3>Player 1's go</h3>)}
@@ -354,12 +358,12 @@ class Game extends Component {
         {(this.state.rounds < 9 && this.state.rounds>0) && (
           <div>
           <textarea 
-            className="form-control"
+            className="form"
             placeholder="Type your guess here"
             value={this.state.searchTerm}
             onChange={this.onGuessChange}
             type="text"
-            cols="20"
+            cols="80"
             rows="1"
             />
         </div>
@@ -371,11 +375,9 @@ class Game extends Component {
 
 class Play extends Component {
   render() {
-    const random = this.props.random;
     const start = this.props.start;
     const clear = this.props.clear;
     const begin = this.props.begin;
-    const audio = this.props.audio;
     const rounds = this.props.rounds;
     const correct1 = this.props.correct1;
     const correct2 = this.props.correct2;
@@ -384,20 +386,20 @@ class Play extends Component {
 
     return (
       <div className="PlayDisplay">
-        {(rounds < 9 && ready==true) && (
+        {(rounds < 9 && ready===true) && (
           <div>
             {(rounds === 0) &&
-              (<button onClick={begin}>Start</button>)}
-            {(rounds !== 0 && rounds < 9 && canClick == true) &&
-              (<button onClick={start}>Next</button>)}
-            {(rounds !== 0 && rounds < 9 && canClick == false) &&
-              (<button>Next</button>)}
-            <button onClick={clear}>New Game</button>
+              (<button className="b1" onClick={begin}>Start</button>)}
+            {(rounds !== 0 && rounds < 9 && canClick === true) &&
+              (<button className="b1" onClick={start}>Next</button>)}
+            {(rounds !== 0 && rounds < 9 && canClick === false) &&
+              (<button className="b1">Next</button>)}
+            <button className="b1" onClick={clear}>New Genre</button>
             <p>The song will play with random effects applied to it</p>
           </div>
         )}
 
-        {(rounds === 9 || ready==false) && (
+        {(rounds === 9 || ready===false) && (
           <div>
             <p>Game Over</p>
             {(correct1 > correct2) && (
@@ -406,10 +408,10 @@ class Play extends Component {
             {(correct1 < correct2) && (
             <p>Player 2 won</p>
             )}
-            {(correct1 == correct2) && (
+            {(correct1 === correct2) && (
             <p>It's a draw</p>
             )}
-            <button onClick={clear}> <Link to="/">New Game</Link></button>
+            <Link to="/"><button className="b1" onClick={clear}> New Genre</button></Link>
           </div>
         )}
 

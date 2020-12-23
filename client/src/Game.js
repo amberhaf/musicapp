@@ -3,7 +3,10 @@ import Pizzicato from 'pizzicato';
 import { Link } from "react-router-dom";
 import Navbar from "./NavBar";
 
-var audio = new Pizzicato.Sound('./wait.mp3');
+var audio = new Pizzicato.Sound({ 
+  source: 'file',
+  options: { path: './noise.mp3' }
+});
 
 //REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS//
 var shortVerb = new Pizzicato.Effects.Reverb({
@@ -176,7 +179,12 @@ class Game extends Component {
       })
       .then(function (back) {
         console.log(back[0].ready);
-        _this.setState({ ready: back[0].ready });
+        if(back[0].ready){
+          window.setTimeout(myFunction, 2000)
+        }
+      function myFunction() {
+        _this.setState({ ready: true });
+      }
       });
   }
 
@@ -209,10 +217,13 @@ class Game extends Component {
   }
   clear() {
     audio.stop();
+    noise.stop();
     this.props.history.push("/");
   }
   start() {
     this.setState({ searchTerm: "" });
+    audio.stop();
+    noise.stop();
     this.setState({ canClick: false });
     var ran=this.state.random;
     this.setState({ lastSong: ran });
@@ -246,16 +257,25 @@ class Game extends Component {
     audio.stop();
     if (round < 9) {
       let num = Math.floor(Math.random() * 15);
+      audio.stop();
       this.setState({ play: false })
       var _this = this;
       fetch('/api/getDetails')
         .then(function (response) {
+          _this.setState({ canClick: false });
           return response.json();
         })
         .then(function (random) {
           _this.setState({ random: random[0].title });
-        });
-      audio = new Pizzicato.Sound('/api/getSong', function () {
+        })
+        .then(function () {
+          audio = new Pizzicato.Sound({ 
+            source: 'file',
+            options: { path: '/api/getSong' }
+        }, function() {
+            console.log('sound file loaded!');
+        if (audio !== undefined) {
+          console.log(audio);
         num = Math.floor(Math.random() * 15);
         if (num === 0) { //Fast Flanger
           audio.addEffect(fastFlang);
@@ -311,15 +331,6 @@ class Game extends Component {
           audio.addEffect(elvis);
           audio.addEffect(reverseVerb);
         }
-        // else if (num === 15) { //Work in Progress
-        //   audio.playbackRate = 0.5;
-        // }
-        // else if (num === 16) { //Work in Progress
-        //   audio.playbackRate = 2;
-        // }
-        // else if (num === 17) { //Work in Progress
-        //  audio.addEffect(pingPong);
-        // }
         if(_this.state.guessed===true){
           _this.setState({ right: "green" });
         }
@@ -328,9 +339,17 @@ class Game extends Component {
           _this.setState({ right: "red" });          
         }
         _this.setState({ guessed: false });
-        audio.play();
-        _this.setState({ canClick: true });
-      });
+      } else {
+          console.log("this was undefined");
+      }
+      audio.play();
+    });
+    }).then(function () {
+      window.setTimeout(myFunction, 5000)
+    });
+    }
+    function myFunction() {
+      _this.setState({ canClick: true });
     }
   }
   _handleKeyDown = (e) => {
@@ -345,13 +364,13 @@ class Game extends Component {
       <div className="App">
         <Navbar />
         <div className="wrapper correct">
-          <span className="dot">Correct {this.state.correct}</span>
-          <img className="record" src="./record2.png" />
+          <span className="dot">Correct<br/>{this.state.correct}</span>
+          <img className="record" src="./record2.png" alt="record" />
         </div>
         <h1 className="title">Melodify</h1>
         <div className="wrapper round">
-          <span className="dot">Round {this.state.rounds}</span>
-          <img className="record" src="./record2.png" />
+          <span className="dot">Round<br/>{this.state.rounds}</span>
+          <img className="record" src="./record2.png"  alt="record"/>
         </div>
         <br />
         {( this.state.rounds > 1) && ( <p className={(this.state.right)}>The last song was <b>{this.state.lastSong}</b></p> )}
@@ -359,12 +378,12 @@ class Game extends Component {
         {(this.state.rounds < 9 && this.state.rounds > 0) && (
           <div>
             <textarea
-              className="form-control"
+              className="form"
               placeholder="Type your guess here"
               value={this.state.searchTerm}
               onChange={this.onGuessChange}
               type="text"
-              cols="20"
+              cols="80"
               rows="1"
             />
           </div>
@@ -376,11 +395,9 @@ class Game extends Component {
 
 class Play extends Component {
   render() {
-    const random = this.props.random;
     const start = this.props.start;
     const clear = this.props.clear;
     const begin = this.props.begin;
-    const audio = this.props.audio;
     const rounds = this.props.rounds;
     const correct = this.props.correct;
     const ready = this.props.ready;
@@ -388,24 +405,24 @@ class Play extends Component {
 
     return (
       <div className="PlayDisplay">
-        {(rounds < 9 && ready == true) && (
+        {(rounds < 9 && ready === true) && (
           <div>
             {(rounds === 0) &&
-              (<button onClick={begin}>Start</button>)}
-            {(rounds !== 0 && rounds < 9 && canClick == true) &&
-              (<button onClick={start}>Next</button>)}
-            {(rounds !== 0 && rounds < 9 && canClick == false) &&
-              (<button>Next</button>)}
-            <button onClick={clear}>New Game</button>
+              (<button className="b1" onClick={begin}>Start</button>)}
+            {(rounds !== 0 && rounds < 9 && canClick === true) &&
+              (<button className="b1"  onClick={start}>Next</button>)}
+            {(rounds !== 0 && rounds < 9 && canClick === false) &&
+              (<button className="b1" >Next</button>)}
+            <button  className="b1" onClick={clear}>New Genre</button>
             <p>The song will play with random effects applied to it</p>
           </div>
         )}
 
-        {(rounds === 9 || ready == false) && (
+        {(rounds === 9 || ready === false) && (
           <div>
             <p>Game Over</p>
             <p>You got {correct} out of 8</p>
-            <button onClick={clear}> <Link to="/">New Game</Link></button>
+            <Link to="/"><button className="b1" onClick={clear}>New Genre</button></Link>
           </div>
         )}
 

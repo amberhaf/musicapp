@@ -17,6 +17,15 @@ var results = [];
 
 var ytpl = require('ytpl');
 
+a=Songs.rock;
+    for (var k = a.length - 1; k > 0; k--) {
+        var j = Math.floor(Math.random() * (k + 1));
+        var temp = a[k];
+        a[k] = a[j];
+        a[k] = temp;
+    }
+  Songs.rock=a;
+
 function downloadByPlaylist(input, callback) {
   var count = 0;
   ytpl(input).then(playlist => {
@@ -32,7 +41,6 @@ function downloadByPlaylist(input, callback) {
     stream.on('finish', function () {
       results.push(details);
       count++;
-      console.log("downloaded" + count);
       if(count===8)
       {
         console.log("download complete");
@@ -67,26 +75,20 @@ function downloadByGenre (genre, callback){
   {
     arr=arr.electro;   
   }
-  for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
-  }
-  for (var i = 0; i < arr.length; i++) {
-    var id = arr[i].url;
-    var title = arr[i].name;
+  var used=[0,1,2,3,4,5,6,7,8,9];
+  for (var i = 0; i < 10; i++) {
+    var x=used.splice(Math.floor(Math.random() * used.length), 1);
+    var id = arr[x].url;
+    var title = arr[x].name;
     details = [{
       id: id,
       title: title
     }];
-    console.log(title);
     results.push(details);
     var stream = ytdl('http://www.youtube.com/watch?v=' + id)
       .pipe(fs.createWriteStream('./songs/' + id + '.mp3'))
     stream.on('finish', function () {
       count++;
-      console.log("downloaded" + count);
       if(count===8)
       {
         console.log("download complete");
@@ -103,8 +105,6 @@ function downloadByGenre (genre, callback){
 
 app.post('/api/choosePlaylist', async function (req, res) {
   results = [];
-  const data = req.body;
-  console.log(req.body.genre);
   var input = req.body.genre;
   downloadByPlaylist(input, function(response) {
     res.json(response); 
@@ -114,7 +114,6 @@ app.post('/api/choosePlaylist', async function (req, res) {
 
 app.post('/api/chooseGenre', async function (req, res) {
   results = [];
-  const data = req.body;
   var genre = req.body.genre;
   downloadByGenre(genre, function(response) {
     res.json(response); 
