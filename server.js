@@ -29,9 +29,16 @@ a=Songs.rock;
 function downloadByPlaylist(input, callback) {
   var count = 0;
   ytpl(input).then(playlist => {
+    var used = [];
     for (var i = 0; i < 8; i++) {
-      var id = playlist.items[i].id;
-      var title = playlist.items[i].title;
+      var ran=Math.floor(Math.random() * playlist.items.length);
+      while(used.includes(ran))
+      {
+        ran=Math.floor(Math.random() * playlist.items.length);
+      }
+      used.push(ran);
+      var id = playlist.items[ran].id;
+      var title = playlist.items[ran].title;
       details = [{
         id: id,
         title: title
@@ -75,11 +82,16 @@ function downloadByGenre (genre, callback){
   {
     arr=arr.electro;   
   }
-  var used=[0,1,2,3,4,5,6,7,8,9];
+  var used=[];
   for (var i = 0; i < 10; i++) {
-    var x=used.splice(Math.floor(Math.random() * used.length), 1);
-    var id = arr[x].url;
-    var title = arr[x].name;
+    var ran=Math.floor(Math.random() * arr.length);
+    while(used.includes(ran))
+    {
+      ran=Math.floor(Math.random() * arr.length);
+    }
+    used.push(ran);
+    var id = arr[ran].url;
+    var title = arr[ran].name;
     details = [{
       id: id,
       title: title

@@ -262,7 +262,6 @@ class Game extends Component {
       var _this = this;
       fetch('/api/getDetails')
         .then(function (response) {
-          _this.setState({ canClick: false });
           return response.json();
         })
         .then(function (random) {
@@ -273,9 +272,7 @@ class Game extends Component {
             source: 'file',
             options: { path: '/api/getSong' }
         }, function() {
-            console.log('sound file loaded!');
         if (audio !== undefined) {
-          console.log(audio);
         num = Math.floor(Math.random() * 15);
         if (num === 0) { //Fast Flanger
           audio.addEffect(fastFlang);
