@@ -36,10 +36,10 @@ function downloadByPlaylist(input, callback) {
         id: id,
         title: title
       }];
+      results.push(details);
       var stream = ytdl('http://www.youtube.com/watch?v=' + id)
       .pipe(fs.createWriteStream('./songs/' + id + '.mp3'));
     stream.on('finish', function () {
-      results.push(details);
       count++;
       if(count===8)
       {
@@ -140,14 +140,6 @@ app.get('/api/getReady', (req, res) => {
   res.send(response);
 });
 
-app.post('/api/clear', (req, res) => {
-  results = [];
-  var response = [{
-    downloaded: false
-  }];
-  res.json(response);
-  res.end();
-});
 
 const port = 5000;
 

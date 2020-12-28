@@ -20,24 +20,7 @@ class Genre extends Component {
     this.play = this.play.bind(this);
   }
   componentDidMount() {
-    var _this = this;
-    var boo = true;
-    fetch('/api/clear' , {
-    method: "POST",
-    headers: {
-    'Content-type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': '*'
-      },
-      body: JSON.stringify({genre: boo})
-  }).then(response => response.json())
-  .then(function(data){
-    console.log('Success:', data[0].downloaded);
-    _this.setState({ downloaded: data[0].downloaded});
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+    this.setState({ downloaded: false});;
   }
   
   handleChangeContent(e) {
