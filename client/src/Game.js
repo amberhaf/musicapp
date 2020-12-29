@@ -3,6 +3,7 @@ import Pizzicato from 'pizzicato';
 import { Link } from "react-router-dom";
 import Navbar from "./NavBar";
 
+{/*default pizzicato global sound variable*/}
 var audio = new Pizzicato.Sound({ 
   source: 'file',
   options: { path: './noise.mp3' }
@@ -152,6 +153,7 @@ var fastTremolo = new Pizzicato.Effects.Tremolo({
 
 class Game extends Component {
   constructor(props) {
+    //default prop state variables
     super(props);
     this.state = {
       searchTerm: "",
@@ -171,6 +173,7 @@ class Game extends Component {
     this.clear = this.clear.bind(this);
   }
 
+  //checks if download is complete inorder for game to be played
   componentDidMount() {
     var _this = this;
     fetch('/api/getReady')
@@ -188,11 +191,13 @@ class Game extends Component {
       });
   }
 
+  //handles form input change
   onGuessChange(event) {
     let random = this.state.random.toLowerCase();
     let correct = this.state.correct;
     let round = this.state.rounds;
     correct = correct + 1;
+    //if song name is correct increment correct and start new round
     if ((event.target.value.length >= 8 && (random.includes(event.target.value.toLowerCase()))) || (random.toLowerCase() === event.target.value.toLowerCase())) {
       this.setState({ correct: correct });
       this.setState({ searchTerm: "" });
@@ -200,36 +205,47 @@ class Game extends Component {
       if (round < 9) {
         this.start();
       }
+      //if rounds equals 9 end game
       else {
         audio.stop();
         this.setState({ rounds: 9 });
       }
     }
+    //update text-area input
     else {
       this.setState({ searchTerm: event.target.value });
     }
   }
+  //reset game and call start
   begin() {
     this.setState({ rounds: 0 });
     this.setState({ correct: 0 });
     this.start();
     audio.stop();
   }
+  //stop sounds before leaving page
   clear() {
     audio.stop();
     noise.stop();
     this.props.history.push("/");
   }
+  //plays new song
   start() {
+    //resets text-area input
     this.setState({ searchTerm: "" });
+    //stop last song
     audio.stop();
     noise.stop();
+    //temporarily disable next button
     this.setState({ canClick: false });
     var ran=this.state.random;
+    //store previous song before changing
     this.setState({ lastSong: ran });
     let round = this.state.rounds;
     round = round + 1;
+    //increment rounds
     this.setState({ rounds: round });
+    //remove all effects
     audio.removeEffect(fastFlang);
     audio.removeEffect(slowFlang);
     audio.removeEffect(pitchRingMod);
@@ -254,20 +270,22 @@ class Game extends Component {
     audio.removeEffect(extremeLowPass);
     audio.removeEffect(elvis);
     audio.removeEffect(reverseVerb);
-    audio.stop();
+    //if game in play play new song
     if (round < 9) {
       let num = Math.floor(Math.random() * 15);
-      audio.stop();
       this.setState({ play: false })
       var _this = this;
+    //fetch next song details from server
       fetch('/api/getDetails')
         .then(function (response) {
           return response.json();
         })
         .then(function (random) {
+          //set next song name
           _this.setState({ random: random[0].title });
         })
         .then(function () {
+          //get song from server and apply pizzicato effects
           audio = new Pizzicato.Sound({ 
             source: 'file',
             options: { path: '/api/getSong' }
@@ -328,6 +346,7 @@ class Game extends Component {
           audio.addEffect(elvis);
           audio.addEffect(reverseVerb);
         }
+        //set colour depending on whether guessed right or wrong
         if(_this.state.guessed===true){
           _this.setState({ right: "green" });
         }
@@ -346,20 +365,16 @@ class Game extends Component {
     });
     }
     function myFunction() {
+     //re-enable next button
       _this.setState({ canClick: true });
     }
   }
-  _handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      console.log('do validate');
-    }
-  }
-
 
   render() {
     return (
       <div className="App">
         <Navbar />
+        {/*Display scoring information */}
         <div className="wrapper correct">
           <span className="dot">Correct<br/>{this.state.correct}</span>
           <img className="record" src="./record2.png" alt="record" />
@@ -370,8 +385,10 @@ class Game extends Component {
           <img className="record" src="./record2.png"  alt="record"/>
         </div>
         <br />
+        {/* If there was a last song display this */}
         {( this.state.rounds > 1) && ( <p className={(this.state.right)}>The last song was <b>{this.state.lastSong}</b></p> )}
         <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct={this.state.correct} ready={this.state.ready} canClick={this.state.canClick} />
+        {/*If game in play display input form*/}
         {(this.state.rounds < 9 && this.state.rounds > 0) && (
           <div>
             <textarea
@@ -402,27 +419,34 @@ class Play extends Component {
 
     return (
       <div className="PlayDisplay">
+        {/*If game is ready to be played show options*/}
         {(rounds < 9 && ready === true) && (
           <div>
+            {/*Start game if not started yet*/}
             {(rounds === 0) &&
               (<button className="b1" onClick={begin}>Start</button>)}
+            {/*Next round if already in play*/}
             {(rounds !== 0 && rounds < 9 && canClick === true) &&
               (<button className="b1"  onClick={start}>Next</button>)}
+            {/*Next is disabled here temporarily*/}
             {(rounds !== 0 && rounds < 9 && canClick === false) &&
               (<button className="b1" >Next</button>)}
             <button  className="b1" onClick={clear}>New Genre</button>
             <p>The song will play with random effects applied to it</p>
           </div>
         )}
-
+        {/*If game over show link back to genre page*/}
         {(rounds === 9 || ready === false) && (
-          <div>
-            <p>Game Over</p>
-            <p>You got {correct} out of 8</p>
+            <div>
+              {/*If game over display score*/}
+              {(rounds === 9) && (
+              <div>
+            <b>Game Over</b><br/>
+            <b>You got {correct} out of 8</b > 
+            </div>)}
             <Link to="/"><button className="b1" onClick={clear}>New Genre</button></Link>
-          </div>
+            </div>
         )}
-
       </div>
     );
   }

@@ -3,6 +3,7 @@ import Pizzicato from 'pizzicato';
 import { Link } from "react-router-dom";
 import Navbar from "./NavBar";
 
+{/*default pizzicato global sound variable*/}
 var audio = new Pizzicato.Sound('./noise.mp3');
 
 //REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS REVERBS//
@@ -140,6 +141,7 @@ var fastTremolo = new Pizzicato.Effects.Tremolo({
 
 class Game extends Component {
   constructor(props) {
+    //default prop state variables
     super(props);
     this.state = {
       searchTerm: "",
@@ -159,7 +161,7 @@ class Game extends Component {
     this.begin = this.begin.bind(this);
     this.clear = this.clear.bind(this);
   }
-
+  //checks if download is complete inorder for game to be played
   componentDidMount() {
     var _this = this;
     fetch('/api/getReady')
@@ -176,18 +178,21 @@ class Game extends Component {
     }
     });
   }
-
+  //handles form input change
   onGuessChange(event) {
     let random = this.state.random.toLowerCase();
     let round = this.state.rounds;
+    //if song name is correct increment correct and start new round
     if ((event.target.value.length >= 9 &&(random.includes(event.target.value.toLowerCase()))) || (random.toLowerCase() === event.target.value.toLowerCase())) {
       this.setState({ guessed: true });
+      //if correct and player2's go increment correct2
       if(round%2===0)
       {
         let correct2 = this.state.correct2;
         correct2 = correct2 + 1;
         this.setState({ correct2: correct2 });
       }
+      //if correct and player1's go increment correct1
       else{
         let correct1 = this.state.correct1;
         correct1 = correct1 + 1;
@@ -196,35 +201,47 @@ class Game extends Component {
       if (round < 9) {
         this.start();
       }
+      //if rounds equals 9 end game
       else {
         audio.stop();
         this.setState({ rounds: 9 });
       }
     }
+    //update text-area input
     else{
     this.setState({ searchTerm: event.target.value });
     }
   }
+  //reset game and call start
   begin() {
     this.setState({ rounds: 0 });
     this.setState({ correct1: 0 });
     this.start();
     audio.stop();
   }
+  //stop sounds before leaving page
   clear() {
     audio.stop();
     noise.stop();
     this.props.history.push("/");
   }
+  //plays new song
   start() {
+    //resets text-area input
     this.setState({ searchTerm: "" });
+    //temporarily disable next button
     this.setState({ canClick: false});
+    //stop all songs playing
     noise.stop();
+    audio.stop();
     var ran=this.state.random;
+    //store previous song before changing
     this.setState({ lastSong: ran });
     let round = this.state.rounds;
     round = round + 1;
+    //increment rounds
     this.setState({ rounds: round });
+    //remove all effects
     audio.removeEffect(fastFlang);
     audio.removeEffect(slowFlang);
     audio.removeEffect(pitchRingMod);
@@ -249,19 +266,22 @@ class Game extends Component {
     audio.removeEffect(extremeLowPass);
     audio.removeEffect(elvis);
     audio.removeEffect(reverseVerb);
-    audio.stop();
+    //if game in play play new song
     if (round < 9) {
       let num = Math.floor(Math.random() * 15);
       this.setState({ play: false })
       var _this = this;
+      //fetch next song details from server
       fetch('/api/getDetails')
         .then(function (response) {
           return response.json();
         })
         .then(function (random) {
+          //set next song name
           _this.setState({ random: random[0].title });
         })
         .then(function () {
+        //get song from server and apply pizzicato effects
       audio = new Pizzicato.Sound('/api/getSong', function () {
         num = Math.floor(Math.random() * 3);
         if (num === 0) { //Fast Flanger
@@ -318,6 +338,7 @@ class Game extends Component {
           audio.addEffect(elvis);
           audio.addEffect(reverseVerb);
         }
+        //set colour depending on whether guessed right or wrong
         if(_this.state.guessed===true){
           _this.setState({ right: "green" });
         }
@@ -333,6 +354,7 @@ class Game extends Component {
       });
       }
       function myFunction() {
+        //re-enable next button
         _this.setState({ canClick: true });
       }
   }
@@ -341,6 +363,7 @@ class Game extends Component {
     return (
       <div className="App">
         <Navbar/>
+        {/*Display scoring information */}
         <div className="wrapper correct">
           <span className="dot">Player1 <br/>{this.state.correct1}</span>
           <img className="record" src="./record2.png" alt="record"/>
@@ -351,10 +374,13 @@ class Game extends Component {
           <img className="record" src="./record2.png" alt="record"/>
         </div>
          <br />
+        {/* If rounds odd player 1's go, even player 2's go */}
         {(this.state.rounds % 2!==0 && this.state.rounds < 9) && (<h3>Player 1's go</h3>)}
         {(this.state.rounds % 2===0 && this.state.rounds !== 0 && this.state.rounds < 9) && (<h3>Player 2's go</h3>)}
+        {/* If there was a last song display this */}
         {( this.state.rounds > 1) && ( <p className={(this.state.right)}>The last song was <b>{this.state.lastSong}</b></p> )}
         <Play random={this.state.random} audio={this.state.audio} clear={this.clear} start={this.start} begin={this.begin} rounds={this.state.rounds} correct1={this.state.correct1} correct2={this.state.correct2} ready={this.state.ready} canClick={this.state.canClick} />
+        {/*If game in play display input form*/}
         {(this.state.rounds < 9 && this.state.rounds>0) && (
           <div>
           <textarea 
@@ -386,12 +412,16 @@ class Play extends Component {
 
     return (
       <div className="PlayDisplay">
+        {/*If game is ready to be played show options*/}
         {(rounds < 9 && ready===true) && (
           <div>
+            {/*Start game if not started yet*/}
             {(rounds === 0) &&
               (<button className="b1" onClick={begin}>Start</button>)}
+            {/*Next round if already in play*/}
             {(rounds !== 0 && rounds < 9 && canClick === true) &&
               (<button className="b1" onClick={start}>Next</button>)}
+            {/*Next is disabled here temoporaily*/}
             {(rounds !== 0 && rounds < 9 && canClick === false) &&
               (<button className="b1">Next</button>)}
             <button className="b1" onClick={clear}>New Genre</button>
@@ -399,18 +429,23 @@ class Play extends Component {
           </div>
         )}
 
+        {/*If game over show link back to genre page*/}
         {(rounds === 9 || ready===false) && (
           <div>
-            <p>Game Over</p>
+            {/*If game over display who won*/}
+            {(rounds === 9) && (
+              <div>
+            <b>Game Over</b><br/>
             {(correct1 > correct2) && (
-            <p>Player 1 won</p>
+            <b>Player 1 won</b>
             )}
             {(correct1 < correct2) && (
-            <p>Player 2 won</p>
+            <b>Player 2 won</b>
             )}
             {(correct1 === correct2) && (
-            <p>It's a draw</p>
+            <b>It's a draw</b>
             )}
+            </div>)}
             <Link to="/"><button className="b1" onClick={clear}> New Genre</button></Link>
           </div>
         )}

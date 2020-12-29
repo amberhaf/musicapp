@@ -9,6 +9,7 @@ import Simple from "./Simple";
 const App = () => (
   <BrowserRouter>
     <div>
+      {/*Routes between different page component*/}
       <Switch>
         <Route component={Game} path="/game" exact={true} />
         <Route component={Genre} path="/" exact={true} />

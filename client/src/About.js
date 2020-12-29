@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Container, Row, Col} from 'react-bootstrap'
 
 class About extends React.Component {
-
+//Page to give overview of what app does
   render() {
     return (
       <div className="App">
@@ -15,7 +15,9 @@ class About extends React.Component {
         <h4 className="desc">
         A fun game to be played together with friends and family to virtually simulate a party atmosphere
         </h4>
+        {/*React-Bootstrap to format page so that it is responsive on both mobile and desktop*/}
           <Container>
+            {/*Two Columns for each row*/}
             <Row>
             <Col>
             <img className="about" src="./peopleMusic.jpg" alt="music"/>

@@ -5,6 +5,7 @@ import Navbar from "./NavBar";
 
 class Genre extends Component {
   constructor(props) {
+    //default prop state variables
     super(props);
     this.state = {
       genre: 'rock',
@@ -22,13 +23,13 @@ class Genre extends Component {
   componentDidMount() {
     this.setState({ downloaded: false});;
   }
-  
+  //handle playlist form input change
   handleChangeContent(e) {
     this.setState({
       content: e.target.value
     });
   }
-
+  //move forward in genre array to display next genre
   moveForward(e) {
     var pos=this.state.pos;
     var list=this.state.list;
@@ -41,7 +42,7 @@ class Genre extends Component {
     this.setState({pos: pos });
     this.setState({genre: genre });
   }
-
+  //move back in genre array to display previous genre
   moveBack(e) {
     var pos=this.state.pos;
     var list=this.state.list;
@@ -54,13 +55,14 @@ class Genre extends Component {
     this.setState({pos: pos });
     this.setState({genre: genre });
   }
-
+  //submit genre and start download on server side
   play(e) {
+    //set downloading variable to in progress
     this.setState({ downloaded: false});
     this.setState({ downloading: true});
     var _this = this;
     var genre=this.state.genre;
-
+    //if playlist send url to server choosePlaylist end point
     if(genre==="custom")
     {
       var content=this.state.content;
@@ -74,7 +76,7 @@ class Genre extends Component {
         body: JSON.stringify({genre: content})
     }).then(response => response.json())
     .then(function(data){
-      console.log('Success:', data[0].downloaded);
+      //when download complete update downloading variable
       _this.setState({ downloaded: data[0].downloaded});
       _this.setState({ downloading: false});
     })
@@ -83,6 +85,7 @@ class Genre extends Component {
       _this.setState({ downloading: false});
     });
     }
+    //if playlist send url to server chooseGenre end point
     else
     {
     fetch('/api/chooseGenre' , {
@@ -95,7 +98,7 @@ class Genre extends Component {
       body: JSON.stringify({genre: genre})
   }).then(response => response.json())
   .then(function(data){
-    console.log('Success:', data[0].downloaded);
+      //when download complete update downloading variable
     _this.setState({ downloaded: data[0].downloaded});
     _this.setState({ downloading: false});
   })
@@ -112,6 +115,7 @@ class Genre extends Component {
           <Navbar/>
            <div>
           <h1>Choose Game</h1>
+          {/*display whatever genre the uset is on*/}
           {(this.state.genre==='pop') &&
           (
           <img className='genre' src='./pop.jpg'  alt="pop"/>
@@ -133,6 +137,7 @@ class Genre extends Component {
           <img className='genre' src='./custom.jpg'  alt="custom"/>
           )}
           <h3>{this.state.genre}</h3>
+          {/*if on custom display playlist form*/}
           {(this.state.genre==='custom') &&
           (
             <div >
@@ -148,12 +153,14 @@ class Genre extends Component {
           </div>
           )}
           <div>
+          {/*icons to move, back forward or submit*/}
           <img className="controls" onClick={this.moveBack} src='rewind.svg' alt="back"/>
           {(this.state.downloading===false) && (
           <button className="b" onClick={this.play}>
             PLAY
           </button>
           )}
+          {/*display react-bootstrap spinner if download is in progress*/}
           {(this.state.downloading===true) && (
           <Spinner className="loading" animation="border" role="status">
             <span className="sr-only">Loading...</span>
@@ -162,6 +169,7 @@ class Genre extends Component {
           <img className="controls" onClick={this.moveForward} src='fast-Forward.svg' alt="forward"/>
           </div>
           <br/>
+          {/*when download is complete display links to pages*/}
           {(this.state.downloaded===true) &&
         (<div><Link to="/game">
            <button className="b1">Single Player</button></Link>
